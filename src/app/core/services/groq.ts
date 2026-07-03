@@ -15,7 +15,7 @@ export class GroqService {
   private http = inject(HttpClient);
 
   private readonly apiKey = environment.groqApiKey;
-  private readonly endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+  private readonly endpoint = 'https://vektor-api-proxy.vektor-api-proxy.workers.dev';
   private readonly model = 'llama-3.3-70b-versatile';
 
   private chatPrompt = `You are Vektor, an elite senior software engineer and technical architect with 15+ years of experience.
@@ -88,7 +88,6 @@ After using tools, briefly explain what you built and how to run it.`;
 
   private callApi(history: { role: string; content: string }[], system: string): Observable<string> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json'
     });
     const body = {
@@ -114,7 +113,6 @@ After using tools, briefly explain what you built and how to run it.`;
       fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
