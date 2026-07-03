@@ -43,12 +43,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# Angular environment files with secrets
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
-# But keep the example template
-!/src/environments/environment.example.ts
-
 # Also ignore any .env files at root
 .env
 .env.local
