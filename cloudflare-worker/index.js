@@ -1,6 +1,5 @@
 // export default {
 //   async fetch(request, env, ctx) {
-//     // Debug: check if secret exists
 //     const hasKey = !!env.GROQ_API_KEY;
 //     const keyLength = env.GROQ_API_KEY ? env.GROQ_API_KEY.length : 0;
     
@@ -25,7 +24,6 @@
 //       });
 //     }
 
-//     // Check if key is missing
 //     if (!env.GROQ_API_KEY) {
 //       return new Response(JSON.stringify({
 //         error: 'GROQ_API_KEY secret not found in worker environment'
@@ -70,7 +68,6 @@
 
 export default {
   async fetch(request, env, ctx) {
-    // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 204,
@@ -92,7 +89,6 @@ export default {
       });
     }
 
-    // Check if key exists
     if (!env.GROQ_API_KEY) {
       return new Response(JSON.stringify({
         error: 'GROQ_API_KEY secret not found'
@@ -107,7 +103,6 @@ export default {
 
     const body = await request.json();
 
-    // Forward to Groq with streaming enabled
     const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -116,20 +111,19 @@ export default {
       },
       body: JSON.stringify({
         ...body,
-        stream: true  // Force streaming
+        stream: true  
       })
     });
 
-    // Stream the response directly — NO buffering
     return new Response(groqResponse.body, {
       status: groqResponse.status,
       headers: {
-        'Content-Type': 'text/plain; charset=utf-8',  // Stream as text
+        'Content-Type': 'text/plain; charset=utf-8',  
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'Cache-Control': 'no-cache',
-        'X-Accel-Buffering': 'no'  // Disable nginx buffering
+        'X-Accel-Buffering': 'no'  
       }
     });
   }
