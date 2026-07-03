@@ -1,5 +1,12 @@
 export default {
   async fetch(request, env, ctx) {
+    // Debug: check if secret exists
+    const hasKey = !!env.GROQ_API_KEY;
+    const keyLength = env.GROQ_API_KEY ? env.GROQ_API_KEY.length : 0;
+    
+    console.log('Secret exists:', hasKey);
+    console.log('Key length:', keyLength);
+
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 204,
@@ -15,6 +22,19 @@ export default {
       return new Response('Method not allowed', { 
         status: 405,
         headers: { 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    // Check if key is missing
+    if (!env.GROQ_API_KEY) {
+      return new Response(JSON.stringify({
+        error: 'GROQ_API_KEY secret not found in worker environment'
+      }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
